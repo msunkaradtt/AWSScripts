@@ -16,8 +16,7 @@ sudo systemctl start docker
 sudo systemctl enable docker
 
 # Verify Docker installation
-docker --version &> /dev/null
-if [ $? -eq 0 ]; then
+if docker --version &> /dev/null; then
     echo "Docker installed successfully: $(docker --version)"
 else
     echo "Docker installation failed." >&2
@@ -27,7 +26,9 @@ fi
 # Add user to the Docker group
 echo "Adding user to Docker group..."
 sudo usermod -aG docker $(whoami)
-newgrp docker
+
+echo "You need to log out and log back in or restart your session to apply the Docker group changes."
+echo "Alternatively, run 'exec su -l $USER' to apply the changes now."
 
 # Download and install Docker Compose
 COMPOSE_URL="https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)"
@@ -41,8 +42,7 @@ echo "Setting execution permissions for Docker Compose..."
 sudo chmod +x "$DEST_PATH"
 
 # Verify Docker Compose installation
-docker-compose --version &> /dev/null
-if [ $? -eq 0 ]; then
+if docker-compose --version &> /dev/null; then
     echo "Docker Compose installed successfully: $(docker-compose --version)"
 else
     echo "Docker Compose installation failed." >&2
