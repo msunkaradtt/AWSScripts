@@ -40,8 +40,8 @@ echo -e "${YELLOW}Alternatively, run 'exec su -l \$USER' to apply the changes no
 echo -e "${YELLOW}Adding NVIDIA Container Toolkit repository and key...${NC}"
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
   && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-     sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list > /dev/null
+    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+    sudo tee /etc/apt/sources.list.d/nvidia-container-toolkit.list
 
 echo -e "${YELLOW}Updating package list (with NVIDIA repo)...${NC}"
 sudo apt-get update -y
