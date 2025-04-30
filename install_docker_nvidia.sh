@@ -34,7 +34,9 @@ fi
 # Add user to the Docker group (always ensure membership)
 echo -e "${YELLOW}Adding user to Docker group...${NC}"
 sudo usermod -aG docker "$(whoami)"
-exec newgrp docker
+
+echo -e "${YELLOW}You need to log out and log back in or restart your session to apply the Docker group changes.${NC}"
+echo -e "${YELLOW}Alternatively, run 'exec su -l $USER' to apply the changes now.${NC}"
 
 # Install NVIDIA Container Toolkit if not present
 if ! command -v nvidia-ctk &> /dev/null; then
@@ -56,14 +58,6 @@ if ! command -v nvidia-ctk &> /dev/null; then
 
     echo -e "${YELLOW}Restarting Docker service...${NC}"
     sudo systemctl restart docker
-
-    # Verify NVIDIA Container Toolkit installation
-    if docker run --rm --gpus all nvidia/cuda:11.0-base nvidia-smi &> /dev/null; then
-        echo -e "${GREEN}NVIDIA Container Toolkit installed successfully and GPU access verified.${NC}"
-    else
-        echo -e "${RED}NVIDIA Container Toolkit installation or GPU access verification failed.${NC}" >&2
-        exit 1
-    fi
 else
     echo -e "${GREEN}NVIDIA Container Toolkit already installed: $(nvidia-ctk --version || echo 'version info unavailable')${NC}"
 fi
