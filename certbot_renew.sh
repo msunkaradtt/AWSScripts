@@ -77,8 +77,8 @@ echo -e "${BLUE}Running certbot renew...${NC}"
 sudo certbot renew || { echo -e "${RED}Error during certbot renew!${NC}"; exit 1; }
 echo -e "${GREEN}Certbot renew completed successfully.${NC}"
 
-# echo -e "${BLUE}Starting containers with docker-compose up -d...${NC}"
-# docker-compose up -d || { echo -e "${RED}Error during docker-compose up!${NC}"; exit 1; }
-# echo -e "${GREEN}Containers started successfully.${NC}"
+echo -e "${BLUE}Starting containers with docker-compose up -d...${NC}"
+docker-compose up -d || { echo -e "${RED}Error during docker-compose up!${NC}"; exit 1; }
+echo -e "${GREEN}Containers started successfully.${NC}"
 
 echo -e "${GREEN}Script completed successfully!${NC}"
