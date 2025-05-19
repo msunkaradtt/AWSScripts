@@ -24,6 +24,7 @@ find_project_folder() {
     fi
     
     echo -e "${GREEN}Found project folder at: $found_path${NC}"
+    # Return just the path without any color codes or additional text
     echo "$found_path"
     return 0
 }
@@ -50,6 +51,7 @@ find_project_folder() {
 # }
 
 # Main script execution
+clear
 echo -e "${CYAN}Please enter the name of your project folder:${NC}"
 read -r project_folder_name
 
@@ -58,10 +60,11 @@ if [[ -z "$project_folder_name" ]]; then
     exit 1
 fi
 
-project_path=$(find_project_folder "$project_folder_name") || exit 1
+# Get the project path without any additional output
+project_path=$(find_project_folder "$project_folder_name" | tail -1) || exit 1
 
-# echo -e "${BLUE}Moving to project folder: $project_path${NC}"
-# cd "$project_path" || { echo -e "${RED}Failed to change to project folder!${NC}"; exit 1; }
+echo -e "${BLUE}Moving to project folder: $project_path${NC}"
+cd "$project_path" || { echo -e "${RED}Failed to change to project folder!${NC}"; exit 1; }
 
 # echo -e "${BLUE}Stopping containers with docker-compose down...${NC}"
 # docker-compose down || { echo -e "${RED}Error during docker-compose down!${NC}"; exit 1; }
@@ -69,7 +72,7 @@ project_path=$(find_project_folder "$project_folder_name") || exit 1
 # check_containers_down || exit 1
 
 # echo -e "${BLUE}Running certbot renew...${NC}"
-# certbot renew || { echo -e "${RED}Error during certbot renew!${NC}"; exit 1; }
+# sudo certbot renew || { echo -e "${RED}Error during certbot renew!${NC}"; exit 1; }
 # echo -e "${GREEN}Certbot renew completed successfully.${NC}"
 
 # echo -e "${BLUE}Starting containers with docker-compose up -d...${NC}"
