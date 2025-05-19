@@ -60,8 +60,8 @@ fi
 
 project_path=$(find_project_folder "$project_folder_name") || exit 1
 
-echo -e "${BLUE}Moving to project folder: $project_path${NC}"
-cd "$project_path" || { echo -e "${RED}Failed to change to project folder!${NC}"; exit 1; }
+# echo -e "${BLUE}Moving to project folder: $project_path${NC}"
+# cd "$project_path" || { echo -e "${RED}Failed to change to project folder!${NC}"; exit 1; }
 
 # echo -e "${BLUE}Stopping containers with docker-compose down...${NC}"
 # docker-compose down || { echo -e "${RED}Error during docker-compose down!${NC}"; exit 1; }
