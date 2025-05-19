@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e  # Exit on any error
+
 # Color definitions
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -30,25 +32,25 @@ find_project_folder() {
 }
 
 # Function to check if any containers are still running
-# check_containers_down() {
-#     local attempts=0
-#     local max_attempts=30
-#     local wait_seconds=2
+check_containers_down() {
+    local attempts=0
+    local max_attempts=30
+    local wait_seconds=2
     
-#     while [[ $attempts -lt $max_attempts ]]; do
-#         if docker-compose ps | grep -q "Up"; then
-#             echo -e "${YELLOW}Waiting for containers to stop... (attempt $((attempts+1))${NC}"
-#             sleep $wait_seconds
-#             ((attempts++))
-#         else
-#             echo -e "${GREEN}All containers are down.${NC}"
-#             return 0
-#         fi
-#     done
+    while [[ $attempts -lt $max_attempts ]]; do
+        if docker-compose ps | grep -q "Up"; then
+            echo -e "${YELLOW}Waiting for containers to stop... (attempt $((attempts+1))${NC}"
+            sleep $wait_seconds
+            ((attempts++))
+        else
+            echo -e "${GREEN}All containers are down.${NC}"
+            return 0
+        fi
+    done
     
-#     echo -e "${RED}Error: Containers did not stop within the expected time.${NC}"
-#     return 1
-# }
+    echo -e "${RED}Error: Containers did not stop within the expected time.${NC}"
+    return 1
+}
 
 # Main script execution
 clear
@@ -66,10 +68,10 @@ project_path=$(find_project_folder "$project_folder_name" | tail -1) || exit 1
 echo -e "${BLUE}Moving to project folder: $project_path${NC}"
 cd "$project_path" || { echo -e "${RED}Failed to change to project folder!${NC}"; exit 1; }
 
-# echo -e "${BLUE}Stopping containers with docker-compose down...${NC}"
-# docker-compose down || { echo -e "${RED}Error during docker-compose down!${NC}"; exit 1; }
+echo -e "${BLUE}Stopping containers with docker-compose down...${NC}"
+docker-compose down || { echo -e "${RED}Error during docker-compose down!${NC}"; exit 1; }
 
-# check_containers_down || exit 1
+check_containers_down || exit 1
 
 # echo -e "${BLUE}Running certbot renew...${NC}"
 # sudo certbot renew || { echo -e "${RED}Error during certbot renew!${NC}"; exit 1; }
