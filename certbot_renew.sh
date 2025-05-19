@@ -26,7 +26,6 @@ find_project_folder() {
     fi
     
     echo -e "${GREEN}Found project folder at: $found_path${NC}"
-    # Return just the path without any color codes or additional text
     echo "$found_path"
     return 0
 }
@@ -52,6 +51,18 @@ check_containers_down() {
     return 1
 }
 
+# Function to check if certbot renewal is needed
+check_renewal_needed() {
+    echo -e "${CYAN}Checking if certificate renewal is needed...${NC}"
+    if sudo certbot certificates | grep -E "EXPIRED|near expiry"; then
+        echo -e "${YELLOW}Certificate is expired or near expiry - renewal needed.${NC}"
+        return 0
+    else
+        echo -e "${GREEN}All certificates are valid and not near expiry.${NC}"
+        return 1
+    fi
+}
+
 # Main script execution
 clear
 echo -e "${CYAN}Please enter the name of your project folder:${NC}"
@@ -73,12 +84,23 @@ docker-compose down || { echo -e "${RED}Error during docker-compose down!${NC}";
 
 check_containers_down || exit 1
 
-echo -e "${BLUE}Running certbot renew...${NC}"
-sudo certbot renew || { echo -e "${RED}Error during certbot renew!${NC}"; exit 1; }
-echo -e "${GREEN}Certbot renew completed successfully.${NC}"
-
-echo -e "${BLUE}Starting containers with docker-compose up -d...${NC}"
-docker-compose up -d || { echo -e "${RED}Error during docker-compose up!${NC}"; exit 1; }
-echo -e "${GREEN}Containers started successfully.${NC}"
+# Check if renewal is needed
+if check_renewal_needed; then
+    echo -e "${BLUE}Running certbot renew...${NC}"
+    if sudo certbot renew --quiet; then
+        echo -e "${GREEN}Certbot renew completed successfully.${NC}"
+        
+        echo -e "${BLUE}Starting containers with docker-compose up -d...${NC}"
+        docker-compose up -d || { echo -e "${RED}Error during docker-compose up!${NC}"; exit 1; }
+        echo -e "${GREEN}Containers started successfully.${NC}"
+    else
+        echo -e "${RED}Certbot renew failed. Containers will remain stopped.${NC}"
+        exit 1
+    fi
+else
+    echo -e "${GREEN}No certificate renewal needed. Restarting containers...${NC}"
+    docker-compose up -d || { echo -e "${RED}Error during docker-compose up!${NC}"; exit 1; }
+    echo -e "${GREEN}Containers started successfully.${NC}"
+fi
 
 echo -e "${GREEN}Script completed successfully!${NC}"
