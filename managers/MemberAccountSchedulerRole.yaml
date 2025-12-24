@@ -1,0 +1,39 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Creates a cross-account IAM role for the central EC2 Scheduler Lambda function to assume.'
+
+Parameters:
+  ManagementAccountId:
+    Type: String
+    Description: 'The 12-digit AWS Account ID of the management/delegated admin account.'
+    AllowedPattern: '^\d{12}$'
+    ConstraintDescription: 'Must be a 12-digit AWS Account ID.'
+
+Resources:
+  EC2SchedulerRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'OrganizationEC2SchedulerRole'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: 'Allow'
+            Principal:
+              AWS: !Sub 'arn:aws:iam::${ManagementAccountId}:root' # Trusts the entire management account
+            Action: 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        - PolicyName: 'EC2StartStopPolicy'
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: 'Allow'
+                Action:
+                  - 'ec2:DescribeInstances'
+                  - 'ec2:StartInstances'
+                  - 'ec2:StopInstances'
+                Resource: '*' # You can restrict this to specific regions or instances if needed
+
+Outputs:
+  RoleArn:
+    Description: "The ARN of the created IAM Role"
+    Value: !GetAtt EC2SchedulerRole.Arn       
