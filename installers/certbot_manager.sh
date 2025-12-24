@@ -2,6 +2,9 @@
 
 # ==============================================================================
 # Certbot Certificate Manager
+# Author: Mohith Bhargav Sunkara
+# Date: 2025-12-24
+# Version: 1.0.0
 # ==============================================================================
 # A script to list, check status, and renew Certbot SSL certificates interactively.
 #

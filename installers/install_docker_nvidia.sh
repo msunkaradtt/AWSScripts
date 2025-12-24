@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# ==============================================================================
+# Install Docker and NVIDIA Container Toolkit
+# Author: Mohith Bhargav Sunkara
+# Date: 2025-12-24
+# Version: 1.0.0
+# ==============================================================================
+# A script to install Docker and NVIDIA Container Toolkit.
+#
+# Usage: sudo ./install_docker_nvidia.sh
+# ==============================================================================
+
 set -e  # Exit on any error
 
 # Define color codes

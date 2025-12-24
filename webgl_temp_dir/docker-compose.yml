@@ -1,0 +1,24 @@
+# ==============================================================================
+# Docker Compose Configuration
+# Author: Mohith Bhargav Sunkara
+# Date: 2025-12-24
+# Version: 1.0.0
+# ==============================================================================
+# A configuration file for Docker Compose to run a nginx server with Brotli compression. And serve the Unity WebGL application.
+#
+# Usage: docker compose up -d
+# ==============================================================================
+
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: nginx_brotli:latest
+    container_name: unity-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:rw
